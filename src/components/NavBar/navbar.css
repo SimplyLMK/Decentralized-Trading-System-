@@ -12,7 +12,7 @@
   }
   .navbar .logo {
     font-weight: bold;
-    color: var(--heading-color);
+    color: cyan;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
