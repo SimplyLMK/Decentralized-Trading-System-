@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from "react"
-import { projectFirestore, timestamp } from "../firebase/config"
+import { fs, ts } from "../fb/config"
 
 let initialState = {
   document: null,
@@ -28,7 +28,7 @@ export const useFirestore = (collection) => {
   const [isCancelled, setIsCancelled] = useState(false)
 
   // collection ref
-  const ref = projectFirestore.collection(collection)
+  const ref = fs.collection(collection)
 
   // only dispatch is not cancelled
   const dispatchIfNotCancelled = (action) => {
@@ -42,7 +42,7 @@ export const useFirestore = (collection) => {
     dispatch({ type: 'IS_PENDING' })
 
     try {
-      const createdAt = timestamp.fromDate(new Date())
+      const createdAt = ts.fromDate(new Date())
       const addedDocument = await ref.add({ ...doc, createdAt })
       dispatchIfNotCancelled({ type: 'ADDED_DOCUMENT', payload: addedDocument })
     }
@@ -64,10 +64,24 @@ export const useFirestore = (collection) => {
     }
   }
 
+  // get a document
+const getDocuments = async () => {
+  dispatch({ type: 'IS_PENDING' });
+
+  try {
+    const snapshot = await ref.get();
+    const documents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    dispatchIfNotCancelled({ type: 'ADDED_DOCUMENT', payload: documents });
+  }
+  catch (err) {
+    dispatchIfNotCancelled({ type: 'ERROR', payload: err.message });
+  }
+};
+
   useEffect(() => {
     return () => setIsCancelled(true)
   }, [])
 
-  return { addDocument, deleteDocument, response }
+  return { addDocument, deleteDocument, getDocuments, response };
 
 }

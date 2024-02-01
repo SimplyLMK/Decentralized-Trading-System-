@@ -21,7 +21,7 @@ ul
 }
 .page-title {
   font-size: 1em;
-  color: var(--heading-color);
+  color: red;
   display: inline-block;
 }
 .btn {
@@ -35,7 +35,7 @@ ul
 }
 .btn:hover {
   color: #fff;
-  background-color: var(--primary-color);
+  background-color: red;
 }
 
 /* forms */

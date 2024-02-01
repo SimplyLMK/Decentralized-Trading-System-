@@ -22,9 +22,9 @@ export default function NavBar()
                     <Link to="/history"><span>Transaction History</span></Link>
                   </li>
 
-                <li> <Link to = "/Login">Log in</Link></li>
-                <li> <Link to = "/Signup">Sign up</Link></li>
-                <button> Log out </button>
+                {/* <li> <Link to = "/Login">Log in</Link></li>
+                <li> <Link to = "/Signup">Sign up</Link></li> */}
+                {/* <button> Log out </button> */}
             </ul>
         </div>
     )

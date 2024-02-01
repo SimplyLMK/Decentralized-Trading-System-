@@ -4,16 +4,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthContextProvider } from './context/AuthContext';
+import { TransactionProvider } from './context/TransContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <TransactionProvider> 
 
+  <React.StrictMode>
     <AuthContextProvider>
         <App />
     </AuthContextProvider>
-    
   </React.StrictMode>
+
+  </TransactionProvider>
+  
 );
 
 // If you want to start measuring performance in your app, pass a function

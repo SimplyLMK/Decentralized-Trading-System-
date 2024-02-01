@@ -1,10 +1,13 @@
 import '../Sidebar/sidebar.css';
 import { NavLink } from "react-router-dom";
 import { useState } from 'react';
+import { useContext } from 'react';
+import { TransactionsContext } from '../../context/TransContext';
 
 export default function Sidebar()
 {
     //
+    const { account } = useContext(TransactionsContext);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => {setIsCollapsed(!isCollapsed);};
 
@@ -15,7 +18,8 @@ export default function Sidebar()
             <div className='content'>
               {/* TODO Display user's profile */}
               <div className='user'>
-                <p>Username</p>
+                <p>My Wallet:</p>
+                <p style={{ fontSize: '50%', fontStretch: 'condensed' }}> {account}</p>
               </div>
               <nav className="links">
                 <ul>
