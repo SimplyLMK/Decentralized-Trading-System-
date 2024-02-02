@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import { contractAPI, contractAddress } from '../smart_contract_v2/Api/constant';
+import { contractABI, contractAddress } from '../smart_contract_v2/Api/constant';
 
 export const TransactionsContext = React.createContext();
 
@@ -10,6 +10,13 @@ const { ethereum } = window;
 
 
 
+if (window.ethereum) {
+  // Use the ethereum object here
+} else {
+  alert('Please install MetaMask or another Ethereum-enabled browser!');
+}
+
+
 const createEthereumContract = () => 
 { 
     // create provider and signer objects 
@@ -17,7 +24,7 @@ const createEthereumContract = () =>
     const signer = provider.getSigner();
 
     // create contract object 
-    const contract = new ethers.Contract(contractAddress, contractAPI, signer);
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
     return contract;
 }
@@ -32,6 +39,8 @@ export const TransactionProvider = ({ children }) =>
     const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
     const [transactions, setTransactions] = useState([]);
 
+
+    // dynamically update form data
     const handleChange = (e, name) => {
         setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
       };
@@ -69,7 +78,7 @@ export const TransactionProvider = ({ children }) =>
           
           {
             console.log(error);
-            throw new Error("No ethereum object");
+            
           }
         };
 ///////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +89,7 @@ export const TransactionProvider = ({ children }) =>
     
             const availableTransactions = await transactionsContract.getAllTransactions();
     
-            const structuredTransactions = availableTransactions.map((transaction) => ({
+            const structuredTransactions = (availableTransactions || []).map((transaction) => ({
               addressTo: transaction.receiver,
               addressFrom: transaction.sender,
               timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
@@ -101,43 +110,60 @@ export const TransactionProvider = ({ children }) =>
       };
 ///////////////////////////////////////////////////////////////////////////////////
 
-const sendTransaction = async () => {
-    try {
-      if (ethereum) {
-        const { addressTo, amount, keyword, message } = formData;
-        const transactionsContract = createEthereumContract();
-        const parsedAmount = ethers.utils.parseEther(amount);
+const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => {
+  try {
+    if (ethereum) {
+      // Use the provided parameters, falling back to formData if not provided
+      const transactionAddressTo = addressTo || formData.addressTo;
+      const transactionAmount = amount || formData.amount;
+      const transactionKeyword = keyword || formData.keyword;
+      const transactionMessage = message || formData.message;
 
-        await ethereum.request({
-          method: "eth_sendTransaction",
-          params: [{
-            from: account,
-            to: addressTo,
-            gas: "0x5208",
-            value: parsedAmount._hex,
-          }],
-        });
+      const transactionsContract = createEthereumContract();
+      const parsedAmount = ethers.utils.parseEther(transactionAmount);
 
-        const transactionHash = await transactionsContract.addToBlockchain(addressTo, parsedAmount, message, keyword);
+      await ethereum.request({
+        method: "eth_sendTransaction",
+        params: [{
+          from: account,
+          to: transactionAddressTo,
+          gas: "0x5208",
+          value: parsedAmount._hex,
+        }],
+      });
 
-        setIsLoading(true);
-        console.log(`Loading - ${transactionHash.hash}`);
-        await transactionHash.wait();
-        console.log(`Success - ${transactionHash.hash}`);
-        setIsLoading(false);
+      const transactionHash = await transactionsContract.addToBlockchain(transactionAddressTo, parsedAmount, transactionMessage, transactionKeyword);
+
+      setIsLoading(true);
+      console.log(`Loading - ${transactionHash.hash}`);
+      await transactionHash.wait();
+      console.log(`Success - ${transactionHash.hash}`);
+      setIsLoading(false);
+        
 
         const transactionsCount = await transactionsContract.getTransactionCount();
 
         setTransactionCount(transactionsCount.toNumber());
         window.location.reload();
       } else {
-        console.log("No ethereum object");
+        console.log("didnt work");
       }
     } catch (error) {
       console.log(error);
 
-      throw new Error("No ethereum object");
+      
     }
+    // try{
+    //   const {addressTo, amount, keyword, message} = formData;
+    //   createEthereumContract();
+    // }
+
+    // catch (error) {
+
+    //   console.log(error);
+    // }
+    
+
   };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +178,7 @@ const checkIfTransactionsExists = async () => {
     } catch (error) {
       console.log(error);
 
-      throw new Error("No ethereum object");
+       
     }
   };    
 
@@ -174,13 +200,17 @@ const checkIfTransactionsExists = async () => {
     return (
         // pass in the connectAccount as a prop to all of our component
         // especially the dashboard and create component
-        <TransactionsContext.Provider value={{ connectAccount, account,  transactionCount,transactions,
+        <TransactionsContext.Provider value={{ connectAccount, account, transactionCount,transactions,
             isLoading,
             sendTransaction,
             handleChange,
             formData,
+            setformData,
         }}>
             {children}
         </TransactionsContext.Provider>
     )
 }
+
+
+

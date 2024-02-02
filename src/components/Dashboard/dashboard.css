@@ -1,4 +1,4 @@
- 
+    
 #parent 
 {
   position: relative;
@@ -29,7 +29,8 @@
   display: flex;
   flex-direction: row; 
   flex-wrap: nowrap;
- 
+  
+  
 }
 
 /* second layer */
@@ -42,7 +43,7 @@
 }
 
 /* first layer(main img) */
-.asset-image-overlayer2 
+.asset-image-container2 
 {
   position: relative;
   top: 0;
@@ -61,12 +62,14 @@
 
 .asset-image-container2 :hover 
 {
+
   transform: scale(1.05);
   transition: all ease 0.2s; 
   box-shadow: 1px 2px 3px rgba(50, 50, 50, 0.05);
-  background-image: url('../../images/play.png');
+  background-image: url('/src/images/play.png');
   background-position: center; 
-
+  
+  
 }
 
 .asset-image-overlayer1
@@ -113,25 +116,10 @@
     margin-bottom: 20px;
   }
 
-  #bar-chart {
-  padding: 1px;
-  background-color: #ebebeb;
-  max-width: 340px; 
-  max-height: 200px; 
-}
+.title
+{
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4  0px;
   
-  .svg-icons1 
-  {
-    position: absolute;
-    left: 170px;
-    top: 310px;
-  }
-
-  .svg-icon2 
-  {
-    position: absolute;
-    left: 965px;
-    top: 310px;
-  }
-
-
+}

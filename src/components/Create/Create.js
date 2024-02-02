@@ -9,9 +9,6 @@ import { useFirestore } from '../../hooks/useFirestore';
 import { stor } from '../../fb/config';
 
 
-
-
-
 const tags = [
     { value: 'wjbu', label: 'Wjbu' },
     { value: 'yoi', label: 'Yoi' },
@@ -24,7 +21,7 @@ export default function Create()
     //const { mintNFT, account } = useContext(TransactionsContext);
 
     // reveice the props "account" passed from Transcontext.js to push address to firestore
-    const { account } = useContext(TransactionsContext);
+    const { account, connectAccount } = useContext(TransactionsContext);
     const navigate = useNavigate()
 
     // form field values
@@ -32,22 +29,11 @@ export default function Create()
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);
     const [category, setCategory] = useState('');
-
-
-    const { documents } = useCollection('users')
-    //const [assignedUsers, setAssignedUsers] = useState([]);
     const [formError, setFormError] = useState(null);
+
+    // enable firestore function invocation from 'assets' collection
     const { addDocument, response } = useFirestore('assets')
     
-    // useEffect(() => {
-    //     if(documents) {
-    //       setUsers(documents.map(user => {
-    //         return { value: {...user, id: user.id}, label: user.displayName }
-    //       }))
-    //     }
-    //   }, [documents])
-    
-
 
     const handleImageChange = (e) => 
     {
@@ -86,12 +72,13 @@ export default function Create()
             
         };
 
+        // after the forms are filled, push 'assets' collection to firestore
         await addDocument(asset)
         if (!response.error)
         {
         navigate('/');
         }
-    
+        
         
     };
 
@@ -115,6 +102,7 @@ export default function Create()
                     <input
                         required 
                         type="number" 
+                        step="0.0001" 
                         onChange={(e) => setPrice(e.target.value)}
                         value={price}
                     />
@@ -137,7 +125,8 @@ export default function Create()
                 </label>
                 
 
-                <button className="btn">Add asset</button>
+                {account && <button className="btn">Add asset</button>}
+                {!account && <p>You need to connect account first before being able to create an asset</p>}
 
                 {formError && <p className="error">{formError}</p>}
             </form>

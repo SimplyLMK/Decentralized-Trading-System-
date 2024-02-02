@@ -13,8 +13,8 @@ export default function Sidebar()
 
     return (
         <div>
-          <button onClick={toggleSidebar} className="toggle-button">Some icon</button>
-          <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+          
+          <div className="sidebar">
             <div className='content'>
               {/* TODO Display user's profile */}
               <div className='user'>

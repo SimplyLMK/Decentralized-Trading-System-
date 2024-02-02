@@ -1,0 +1,70 @@
+
+    .playlist-details {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+  }
+  .cover {
+    overflow: hidden;
+    border-radius: 20px;
+    position: relative;
+    padding: 160px;
+    
+  }
+  
+  .cover img {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 80%;
+    min-height: 80%;
+    max-width: 120%;
+    max-height: 120%;
+  }
+  .playlist-info {
+    text-align: center;
+  }
+  .playlist-info h2 {
+    text-transform: capitalize;
+    font-size: 28px;
+    margin-top: 20px;
+  }
+  .playlist-info p {
+    margin-bottom: 20px;
+  }
+  .username {
+    color: #999;
+  }
+  .desc {
+    text-align: left;
+  }
+  .info
+  {
+  margin-bottom: 20px; 
+  font-size: 18px;
+  
+  }
+  .title
+  {
+    margin-right: 40px;
+    
+    
+  }
+  .one-song
+  {
+    margin-left: 4rem;
+    align-items: center;
+
+  }
+  
+.price
+{
+    margin-top: 1rem;
+    padding: 15px;
+    background-color: #e7e6e6;
+    color:orangered;
+}
+
+  
+
