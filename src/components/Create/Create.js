@@ -4,7 +4,6 @@ import './create.css';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TransactionsContext } from '../../context/TransContext';
-import { useCollection } from '../../hooks/useCollection';
 import { useFirestore } from '../../hooks/useFirestore';
 import { stor } from '../../fb/config';
 
@@ -21,7 +20,7 @@ export default function Create()
     //const { mintNFT, account } = useContext(TransactionsContext);
 
     // reveice the props "account" passed from Transcontext.js to push address to firestore
-    const { account, connectAccount } = useContext(TransactionsContext);
+    const { account } = useContext(TransactionsContext);
     const navigate = useNavigate()
 
     // form field values
@@ -125,8 +124,8 @@ export default function Create()
                 </label>
                 
 
-                {account && <button className="btn">Add asset</button>}
-                {!account && <p>You need to connect account first before being able to create an asset</p>}
+                {account ? <button className="btn">Add asset</button> : 
+                <p>You need to connect account first before being able to create an asset</p>}
 
                 {formError && <p className="error">{formError}</p>}
             </form>

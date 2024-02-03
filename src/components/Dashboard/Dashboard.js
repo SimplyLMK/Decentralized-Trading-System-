@@ -1,65 +1,82 @@
 import './dashboard.css';
 import { TransactionsContext } from '../../context/TransContext';
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { useCollection } from '../../hooks/useCollection';
-import { Link } from 'react-router-dom';
-import { ts } from '../../fb/config';
-
-
+import { useFirestore } from '../../hooks/useFirestore';
+import Filter from './Filter';
+import Display from './Template';
+import SearchBar from './Searchbar';
 
   
   const Dashboard = () => 
   {
 
-    //////////////////////////////////////////////////////////
-    const { account, connectAccount, handleChange, sendTransaction, formData, isLoading } = useContext(TransactionsContext);
+    // receiving props and setups
+    const {documents, error, count} = useCollection('assets');
+  
+    const [filter, setfilter] = useState("all");
+    const [searchTerm, setSearchTerm] = useState('');
     
-    //////////////////////////////////////////////////////////
-    
-    const {documents, error} = useCollection('assets');
+    const {deleteDocument} = useFirestore('assets');
+   
 
-    ///////////////////////////////////////////////////////////
-    
-    const docOrder = (documents) => {
-      return [...documents].sort((a, b) => b.ts.toDate() - a.ts.toDate());
-    };
+    //////////////////__function_toBe_Invoked__//////////////////////
 
-    ///////////////////////////////////////////////////////////
-    
+    const changeFilter = (newFilter) => {
+      setfilter(newFilter);
+    }
 
+    const searchAssets = (searchTerm) => {
+      setSearchTerm(searchTerm);
+     };
+     
     
+   
+
+    // is invoked when transaction is completed, remove the displayed offer
+    const handleDelete = (e) =>
+     {
+       deleteDocument(document.id);
+     }
+
+
+     const assets = documents ? documents.filter(document => {
+      let matchesFilter = true;
+      switch(filter) {
+         case 'all':
+           break;
+         case 'yoi':
+         case 'cheapest':
+         case 'expensive':
+         case 'wjbu':
+           matchesFilter = document.category === filter;
+           break;
+         default:
+           break;
+      }
+      
+      const matchesSearchTerm = document.name.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesFilter && matchesSearchTerm;
+     }) : null;
+     
+     const assetsCount = assets ? assets.length : 0;
+
+
 return (
+
   <div className="library">
-    <div className="title">Here are all the digital assets available for trading </div>
-    <div className="flex-container">
-      {documents && documents.map((doc) => (
-        <Link key={doc.id} to={`/details/${doc.id}`}>
+    {/* <div className="title">Here are all the digital assets available for trading </div>
+     */}
+    {/* search */}
+    {documents && <SearchBar onSearch={searchAssets} />}    
 
-          <div className="asset-container">
-            <div id="parent">
-              <div className="asset-image-container">
-                <div className="asset-image-overlayer2"></div>
-                <img src={doc.image}/> 
-              </div>
-
-              <div className="asset-info">
-                <div className="asset-image-container2">
-                  <img src={doc.image}/> 
-                  <h2>{doc.name}</h2>
-                </div>
-              </div>
-
-              <div className="asset-image-container3">
-                <div className="asset-image-overlayer1"></div>
-                <img src={doc.image} /> 
-              </div>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-    <div>Dashboard</div>
-    {!account && <button onClick={connectAccount}>Connect Wallet</button>}
+    {/* filtered */}
+    {documents && <Filter changeFilter={changeFilter} />}
+    
+    {/* template */}
+    {assets && <Display assets={assets} count={assetsCount} />}
+    
+    
   </div>
 );
 }

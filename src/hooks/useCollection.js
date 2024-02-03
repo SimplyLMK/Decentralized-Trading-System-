@@ -4,6 +4,8 @@ import { fs } from "../fb/config"
 export const useCollection = (collection, _query, _orderBy) => {
   const [documents, setDocuments] = useState(null)
   const [error, setError] = useState(null)
+  const [count, setCount] = useState(0);
+
 
   // if we don't use a ref --> infinite loop in useEffect
   // _query is an array and is "different" on every function call
@@ -28,6 +30,7 @@ export const useCollection = (collection, _query, _orderBy) => {
       
       // update state
       setDocuments(results)
+      setCount(snapshot.size);
       setError(null)
     }, error => {
       console.log(error)
@@ -39,5 +42,6 @@ export const useCollection = (collection, _query, _orderBy) => {
 
   }, [collection, query, orderBy])
 
-  return { documents, error }
+  return { documents, error, count };
+
 }

@@ -5,6 +5,8 @@ import { TransactionsContext } from '../../context/TransContext';
 import { useContext } from 'react';
 
 
+
+
 export default function Details() 
 {       
         // main.js route :create/:id was used to enable param usage
@@ -15,7 +17,9 @@ export default function Details()
         // check out the useDocument.js in the hooks folder for clarity
         const { document, error, isLoading } = useDocument('assets', id);
 
-        const { account, connectAccount, setformData, sendTransaction, formData} = useContext(TransactionsContext);
+        const { account, sendTransaction} = useContext(TransactionsContext);
+
+        
 
         console.log("account", account);
 
@@ -38,15 +42,11 @@ export default function Details()
             const keyword = document.name;
             const message = ''; 
           
-            // Call sendTransaction with the new values
+            // pass in the args retrieved from firestore
             sendTransaction({ addressTo, amount, keyword, message });
           };
           
 
-
-
-         
-    
         return (
                 <div className="playlist-details">
                     <div className="playlist-info">
@@ -64,7 +64,7 @@ export default function Details()
                                 <p>{document && document.price} ETH</p>
                             </div>
                         </div>
-                        <button className='botan' onClick={handleSubmit}>Instant Purchase</button>
+                        <button className="button-77" onClick={handleSubmit}>Instant Purchase</button>
                     </div>
                 </div>
             );
