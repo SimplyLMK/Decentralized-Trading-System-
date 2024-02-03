@@ -17,7 +17,7 @@ const HeroSection = () => {
                 Coinmiya is a decentralized NFT trading system, offering users a secure 
                 and transparent platform to trade Non-Fungible Tokens (NFT). Through 
                 smart contracts, it automates transactions, empowering users 
-                with direct control over their digital assets. Yoimi's commitment 
+                with direct control over their digital assets. Coinmiya's commitment 
                 to decentralization ensures a trustworthy environment, making NFT 
                 trading seamless and user-friendly.
               </p>
