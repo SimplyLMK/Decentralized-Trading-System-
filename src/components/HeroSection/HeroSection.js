@@ -11,11 +11,11 @@ const HeroSection = () => {
           <Col lg="12" md="12" sm="6">
             <div className="hero__content">
               <h2>
-                <span>Yoimi - Decentralized Trading System</span> 
+                <span>Coinmiya - Decentralized Trading System</span> 
               </h2>
               <p>
-                Yoimi is a decentralized NFT trading system, offering users a secure 
-                and transparent platform to trade Non-Fungible Tokens. Through 
+                Coinmiya is a decentralized NFT trading system, offering users a secure 
+                and transparent platform to trade Non-Fungible Tokens (NFT). Through 
                 smart contracts, it automates transactions, empowering users 
                 with direct control over their digital assets. Yoimi's commitment 
                 to decentralization ensures a trustworthy environment, making NFT 

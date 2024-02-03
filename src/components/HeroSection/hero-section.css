@@ -16,6 +16,11 @@
   display: inline-block;
 }
 
+.hero__content p {
+  margin-top: 30px;
+  text-align: justify;
+}
+
 .hero__btns {
   margin-top: 40px;
 }
