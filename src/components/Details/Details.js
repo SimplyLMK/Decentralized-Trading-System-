@@ -6,7 +6,8 @@ import { useContext } from 'react';
 
 
 
-
+//__writen by 104179506__Le Minh Kha
+// details is the page enable purchasing on a single asset
 export default function Details() 
 {       
         // main.js route :create/:id was used to enable param usage
@@ -17,6 +18,7 @@ export default function Details()
         // check out the useDocument.js in the hooks folder for clarity
         const { document, error, isLoading } = useDocument('assets', id);
 
+        // useContext hook is used to receive props from TransContext.js
         const { account, sendTransaction} = useContext(TransactionsContext);
 
         
@@ -36,13 +38,14 @@ export default function Details()
         const handleSubmit = (e) => {
             e.preventDefault();
           
-            // Directly use document properties here
+            // Directly use document properties retrieved from firestore
             const addressTo = document.account;
             const amount = document.price;
             const keyword = document.name;
             const message = ''; 
           
-            // pass in the args retrieved from firestore
+            // pass in the args we just set aboved
+            // this function exported as prop from transContext.js
             sendTransaction({ addressTo, amount, keyword, message });
           };
           
@@ -64,7 +67,9 @@ export default function Details()
                                 <p>{document && document.price} ETH</p>
                             </div>
                         </div>
-                        <button className="button-77" onClick={handleSubmit}>Instant Purchase</button>
+                        {account ?<button className="button-77" onClick={handleSubmit}>Instant Purchase</button> :
+                        <p>You need to connect account first before being able purchase</p>}
+
                     </div>
                 </div>
             );

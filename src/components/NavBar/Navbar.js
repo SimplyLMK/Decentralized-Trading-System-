@@ -5,6 +5,9 @@ import { useContext } from 'react';
 
 import Placeholder from '../../images/yoimi.png'
 
+
+//__writen by 104179506__Le Minh Kha
+// IS a navbar,it is straightfoward so i believe no explanation is needed
 export default function NavBar()
 {
 

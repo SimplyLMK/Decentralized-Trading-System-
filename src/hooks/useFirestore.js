@@ -1,6 +1,10 @@
 import { useReducer, useEffect, useState } from "react"
 import { fs, ts } from "../fb/config"
 
+
+//__writen by 104179506__Le Minh Kha
+// recycles from another project of mine which also used firebase
+
 let initialState = {
   document: null,
   isPending: false,

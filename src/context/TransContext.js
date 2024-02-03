@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { contractABI, contractAddress } from '../smart_contract_v2/Api/constant';
 
+
+//__writen by 104179506__Le Minh Kha
+// transactionContext the key to interact with the deployed contract
+// the API of the contract is fetched in the constant.js, and invoked here
 export const TransactionsContext = React.createContext();
 
 
@@ -11,11 +15,9 @@ const { ethereum } = window;
 
 
 if (window.ethereum) {
-  // Use the ethereum object here
 } else {
-  alert('Please install MetaMask or another Ethereum-enabled browser!');
+  alert('Please install MetaMask beforehand');
 }
-
 
 const createEthereumContract = () => 
 { 
@@ -30,35 +32,33 @@ const createEthereumContract = () =>
 }
 
 
+// will wrap this around the entire main.js to enable global access
 export const TransactionProvider = ({ children }) => 
 {
 
+    // setting up hooks
     const [formData, setformData] = useState({ addressTo: "", amount: "", keyword: "", message: "" });
     const [account, setAccount] = useState(''); 
     const [isLoading, setIsLoading] = useState(false);
     const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
     const [transactions, setTransactions] = useState([]);
-
-
-    // dynamically update form data
-    const handleChange = (e, name) => {
-        setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
-      };
-    
-    
+    ;
 
 //////////////////////////////////////////////////////////////////////////////////
     const walletState = async () => {
         try {
-            if (!ethereum) return alert("Please install MetaMask.");
-      
+            if (!ethereum) return alert("Install MetaMask.");
+
+            // sends a request to the Ethereum provider(metamask)
             const accounts = await ethereum.request({ method: "eth_accounts" });
       
             if (accounts.length) {
               setAccount(accounts[0]);
       
               getAllTransactions();
-            } else {
+            } 
+            else 
+            {
               console.log("No accounts found");
             }
           } catch (error) {
@@ -68,10 +68,12 @@ export const TransactionProvider = ({ children }) =>
 ///////////////////////////////////////////////////////////////////////////////////
     const connectAccount = async () => {
         try {
-            if (!ethereum) return alert("Please install MetaMask.");
-      
+            if (!ethereum) return alert("Install MetaMask.");
+
+            //connect metamask Ethereum account to the application
             const accounts = await ethereum.request({ method: "eth_requestAccounts", });
-      
+
+            // update account to the first one
             setAccount(accounts[0]);
             window.location.reload();
           } catch (error) 
@@ -84,17 +86,23 @@ export const TransactionProvider = ({ children }) =>
 ///////////////////////////////////////////////////////////////////////////////////
     const getAllTransactions = async () => {
         try {
-          if (ethereum) {
+          if (ethereum) 
+          {
+            // instantiate a contract
             const transactionsContract = createEthereumContract();
-    
+            
+            // fetches all transactions related to the contract
+            // await until the promise to getAllTransaction is resolved
             const availableTransactions = await transactionsContract.getAllTransactions();
-    
+            
+            //For each transaction, an object is created with properties as shown
             const structuredTransactions = (availableTransactions || []).map((transaction) => ({
               addressTo: transaction.receiver,
               addressFrom: transaction.sender,
               timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
               message: transaction.message,
               keyword: transaction.keyword,
+              //  standard converion of the base unit 'wei' to 'ether'
               amount: parseInt(transaction.amount._hex) / (10 ** 18)
             }));
     
@@ -106,22 +114,29 @@ export const TransactionProvider = ({ children }) =>
           }
         } catch (error) {
           console.log(error);
+          
         }
       };
+
+      
 ///////////////////////////////////////////////////////////////////////////////////
 
+// core function to send transaction to the blockchain
 const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => {
   try {
     if (ethereum) {
       // Use the provided parameters, falling back to formData if not provided
+      // the args are all will be retrieved from firestore, and pass in
       const transactionAddressTo = addressTo || formData.addressTo;
       const transactionAmount = amount || formData.amount;
       const transactionKeyword = keyword || formData.keyword;
       const transactionMessage = message || formData.message;
 
+      // instantiate a contract, use the account ethereum balance to send the transaction
       const transactionsContract = createEthereumContract();
       const parsedAmount = ethers.utils.parseEther(transactionAmount);
 
+      // "eth_sendTransaction" to metamask, which will pop up window to confirm the transaction
       await ethereum.request({
         method: "eth_sendTransaction",
         params: [{
@@ -132,45 +147,38 @@ const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => 
         }],
       });
 
+      // after the transaction is confirmed, added to the blockchain (check out transaction.sol)
       const transactionHash = await transactionsContract.addToBlockchain(transactionAddressTo, parsedAmount, transactionMessage, transactionKeyword);
 
       setIsLoading(true);
+      // waiting for the transaction to be mined
       console.log(`Loading - ${transactionHash.hash}`);
       await transactionHash.wait();
       console.log(`Success - ${transactionHash.hash}`);
       setIsLoading(false);
         
-
+        // fetches the total number of transactions 
         const transactionsCount = await transactionsContract.getTransactionCount();
-
+        // and sets it to the state
         setTransactionCount(transactionsCount.toNumber());
         window.location.reload();
-      } else {
+      } else 
+      {
         console.log("didnt work");
       }
     } catch (error) {
-      console.log(error);
-
-      
+      console.log(error);  
     }
-    // try{
-    //   const {addressTo, amount, keyword, message} = formData;
-    //   createEthereumContract();
-    // }
-
-    // catch (error) {
-
-    //   console.log(error);
-    // }
-    
-
   };
 
 ///////////////////////////////////////////////////////////////////////////////////
 const checkIfTransactionsExists = async () => {
     try {
-      if (ethereum) {
+      if (ethereum) 
+      {
+        // instantiate a contract
         const transactionsContract = createEthereumContract();
+        // await for the promise being returned as the number of contracts
         const currentTransactionCount = await transactionsContract.getTransactionCount();
 
         window.localStorage.setItem("transactionCount", currentTransactionCount);
@@ -203,7 +211,6 @@ const checkIfTransactionsExists = async () => {
         <TransactionsContext.Provider value={{ connectAccount, account, transactionCount,transactions,
             isLoading,
             sendTransaction,
-            handleChange,
             formData,
             setformData,
         }}>

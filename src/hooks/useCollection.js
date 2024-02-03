@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react"
 import { fs } from "../fb/config"
 
+//__writen by 104179506__Le Minh Kha
+// recycles from another project of mine which also used firebase
 export const useCollection = (collection, _query, _orderBy) => {
   const [documents, setDocuments] = useState(null)
   const [error, setError] = useState(null)

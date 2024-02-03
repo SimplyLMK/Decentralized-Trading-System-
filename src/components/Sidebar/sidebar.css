@@ -7,6 +7,10 @@
     position: relative;
     color: #fff;
     transition: transform 0.3s ease-in-out;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
   }
   .content {
     position: fixed;

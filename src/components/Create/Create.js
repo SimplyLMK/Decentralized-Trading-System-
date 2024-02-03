@@ -15,11 +15,14 @@ const tags = [
     { value: 'expensive', label: 'Expensive' },
 ];
 
+//__writen by 104179506__Le Minh Kha
+// create function is used to create a document and pushed it to firestore
+// data in the doc will be retrieved and displayed in the dashboard component
 export default function Create() 
 {
-    //const { mintNFT, account } = useContext(TransactionsContext);
 
     // reveice the props "account" passed from Transcontext.js to push address to firestore
+    // "account" will be used as a "addressTo" when we invoke the sendTransaction function
     const { account } = useContext(TransactionsContext);
     const navigate = useNavigate()
 
@@ -29,6 +32,9 @@ export default function Create()
     const [image, setImage] = useState(null);
     const [category, setCategory] = useState('');
     const [formError, setFormError] = useState(null);
+
+    // firebase functions turn into template to be imported as hooks
+    // => greatly increase code reusibility
 
     // enable firestore function invocation from 'assets' collection
     const { addDocument, response } = useFirestore('assets')
@@ -45,10 +51,12 @@ export default function Create()
     
         if (!category) 
         {
-            setFormError('Please select a asset category.');
+            setFormError('Please select a asset tag.');
             return;
         }
 
+        
+        // we are storing the img in firebase storage, and the url to img is in firestore
          // Create a storage ref
         const storageRef = stor.ref();
         const fileRef = storageRef.child(image.name);
@@ -59,7 +67,6 @@ export default function Create()
         // Get the URL of the uploaded file
         const url = await snapshot.ref.getDownloadURL();
         
-
         // the key point here is that the url is retrieved before pushing data to firestore
         const asset = 
         {
@@ -67,8 +74,7 @@ export default function Create()
             price,
             account,
             category: category.value,
-            image: url,
-            
+            image: url,        
         };
 
         // after the forms are filled, push 'assets' collection to firestore
@@ -77,24 +83,22 @@ export default function Create()
         {
         navigate('/');
         }
-        
-        
-    };
-
-    
+               
+    };  
     return (
         <div className="create-form">
             <h2 className="page-title">Create a new asset</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>            
                 <label>
+
                     <span>Name:</span>
                     <input
                         required 
                         type="text" 
                         onChange={(e) => setName(e.target.value)}
                         value={name}
-                        
                     />
+
                 </label>
                 <label>
                     <span>Ethereum price:</span>

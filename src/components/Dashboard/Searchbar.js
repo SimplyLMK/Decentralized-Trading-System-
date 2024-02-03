@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+//__writen by 104179506__Le Minh Kha
+// this is similar to the filter component, but it is used to filter the assets by nam
 export default function SearchBar({ onSearch }) {
     const [searchTerm, setSearchTerm] = useState('');
    

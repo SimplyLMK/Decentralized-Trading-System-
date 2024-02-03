@@ -7,31 +7,36 @@ import Filter from './Filter';
 import Display from './Template';
 import SearchBar from './Searchbar';
 
-  
+  //__writen by 104179506__Le Minh Kha
+  // Dashboard is the main component that displays all the assets available for trading
+  // it retrieve the collection of document pushed to firestore by the create component
   const Dashboard = () => 
   {
 
     // receiving props and setups
-    const {documents, error, count} = useCollection('assets');
+    // firebase functions turn into template to be imported as hooks
+    // => greatly increase code reusibility 
+    const {documents} = useCollection('assets');
+    const {deleteDocument} = useFirestore('assets');
   
     const [filter, setfilter] = useState("all");
     const [searchTerm, setSearchTerm] = useState('');
-    
-    const {deleteDocument} = useFirestore('assets');
-   
 
-    //////////////////__function_toBe_Invoked__//////////////////////
+    ////////////////////////////////////////
 
-    const changeFilter = (newFilter) => {
+    // state setter from useState hook
+    // set the arg to the new filter
+    // when invoked, it will update the filter state
+    const changeFilter = (newFilter) => 
+    {
       setfilter(newFilter);
     }
 
-    const searchAssets = (searchTerm) => {
+    const searchAssets = (searchTerm) => 
+    {
       setSearchTerm(searchTerm);
      };
      
-    
-   
 
     // is invoked when transaction is completed, remove the displayed offer
     const handleDelete = (e) =>
@@ -40,6 +45,8 @@ import SearchBar from './Searchbar';
      }
 
 
+     // test case to check if the filter match the category of the document stored of Fierstore
+     // this is for the requirement "Filter" function of project
      const assets = documents ? documents.filter(document => {
       let matchesFilter = true;
       switch(filter) {
@@ -55,6 +62,8 @@ import SearchBar from './Searchbar';
            break;
       }
       
+      // check whether the document name matches the user input (searchterm)
+      // this is for the requirement "Search" function of project
       const matchesSearchTerm = document.name.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesFilter && matchesSearchTerm;
      }) : null;
