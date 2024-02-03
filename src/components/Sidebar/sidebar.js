@@ -24,7 +24,7 @@ export default function Sidebar()
               <nav className="links">
                 <ul>
                   <li>
-                    <NavLink exact to="/"><span>Dashboard</span></NavLink>
+                    <NavLink exact to="/dashboard"><span>Dashboard</span></NavLink>
                   </li>
                   {/* TODO create new product */}
                   <li>

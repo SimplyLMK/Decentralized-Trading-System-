@@ -17,18 +17,23 @@ export default function NavBar()
                 <img src={Placeholder}  />
                 <span>Coinmiya</span>
             </li>
+                <li>
+                    <Link to="/"><span>Home</span></Link>
+                </li>
+                <li>
+                    <Link to="/dashboard"><span>Marketplace</span></Link>
+                </li>
+                <li>
+                    <Link to="/create"><span>Create</span></Link>
+                </li>
+                
+                <li>
+                    <Link to="/history"><span>History</span></Link>
+                </li>
 
                 <li>
-                    <Link to="/create"><span>Create new product</span></Link>
-                  </li>
-                  
-                  <li>
-                    <Link to="/history"><span>Transaction History</span></Link>
-                  </li>
-
-                  <li>
-                  {!account && <button className="button-77" onClick={connectAccount}>Connect Wallet</button>}
-                  </li>
+                    {!account && <button className="button-77" onClick={connectAccount}>Connect Wallet</button>}
+                </li>
 
                 {/* <li> <Link to = "/Login">Log in</Link></li>
                 <li> <Link to = "/Signup">Sign up</Link></li> */}
