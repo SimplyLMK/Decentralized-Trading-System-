@@ -75,8 +75,8 @@ Sidebar now is responsive */
   }
 }
 
-/* when the width of the screen < 800px, the sidebar will not be displayed  */
-@media only screen and (max-width: 576px) {
+/* when the width of the screen < 750px, the sidebar will not be displayed  */
+@media only screen and (max-width: 750px) {
   .sidebar {
     display: none;
   }
