@@ -122,7 +122,9 @@ export const TransactionProvider = ({ children }) =>
 ///////////////////////////////////////////////////////////////////////////////////
 
 // core function to send transaction to the blockchain
-const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => {
+const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => 
+{
+  let transactionStatus = false;
   try {
     if (ethereum) {
       // Use the provided parameters, falling back to formData if not provided
@@ -162,6 +164,7 @@ const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => 
         // and sets it to the state
         setTransactionCount(transactionsCount.toNumber());
         window.location.reload();
+        transactionStatus = true;
       } else 
       {
         console.log("didnt work");
@@ -169,6 +172,8 @@ const sendTransaction = async ({ addressTo, amount, keyword, message } = {}) => 
     } catch (error) {
       console.log(error);  
     }
+    // use to delete a document after transaction is finished.
+    //return transactionStatus;
   };
 
 ///////////////////////////////////////////////////////////////////////////////////

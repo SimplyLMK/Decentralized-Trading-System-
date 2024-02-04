@@ -32,6 +32,7 @@ export default function Create()
     const [image, setImage] = useState(null);
     const [category, setCategory] = useState('');
     const [formError, setFormError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // firebase functions turn into template to be imported as hooks
     // => greatly increase code reusibility
@@ -48,7 +49,7 @@ export default function Create()
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormError(null);
-    
+        setIsLoading(true);
         if (!category) 
         {
             setFormError('Please select a asset tag.');
@@ -83,12 +84,14 @@ export default function Create()
         {
         navigate('/');
         }
+
+        setIsLoading(false);
                
     };  
     return (
         <div className="create-form">
             <h2 className="page-title">Create a new asset</h2>
-            <form onSubmit={handleSubmit}>            
+            <form onSubmit={handleSubmit} >            
                 <label>
 
                     <span>Name:</span>
@@ -128,8 +131,9 @@ export default function Create()
                 </label>
                 
 
-                {account ? <button className="btn">Add asset</button> : 
-                <p>You need to connect account first before being able to create an asset</p>}
+                {account ? <button className="btn" disabled={isLoading}>
+                    {isLoading ? 'Loading...' : 'Add asset'}
+                </button> : <p>You need to connect account first before being able to create an asset</p>}
 
                 {formError && <p className="error">{formError}</p>}
             </form>

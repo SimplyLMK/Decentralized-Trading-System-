@@ -18,7 +18,7 @@ export const useDocument = (collection, id) => {
         setError(null)
       }
       else {
-        setError('No such document exists')
+        setError('waiting for transaction...')
       }
     }, err => {
       console.log(err.message)
