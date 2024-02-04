@@ -3,7 +3,7 @@ Sidebar now is responsive */
 
 .sidebar {
     width: 300px;
-    min-width: 300px;
+    min-width: 100px;
     background: orangered;
     min-height: 100vh;
     box-sizing: border-box;
@@ -20,7 +20,6 @@ Sidebar now is responsive */
   width: inherit;
 }
 .sidebar .user {
-  font-weight: bold;
   text-align: center;
   letter-spacing: 1px;
   padding: 40px 30px;
@@ -62,8 +61,22 @@ Sidebar now is responsive */
   transform: translateY(-50%);
 }
 
-/* // when the width of the screen < 800px, the sidebar will not be displayed  */
+/* when 801px < the width < 992px, the width of sidebar reduce 50px  */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 250px;
+  }
+}
+
+/* when 577px < the width < 800px, the width of sidebar reduce 50px  */
 @media (max-width: 800px) {
+  .sidebar {
+    width: 200px;
+  }
+}
+
+/* when the width of the screen < 800px, the sidebar will not be displayed  */
+@media only screen and (max-width: 576px) {
   .sidebar {
     display: none;
   }
