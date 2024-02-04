@@ -31,7 +31,7 @@ export default function Sidebar()
                   </li>
 
                   <li>
-                    <NavLink exact to="/dashboard"><span>Dashboard</span></NavLink>
+                    <NavLink to="/dashboard"><span>Dashboard</span></NavLink>
                   </li>
                   
                   <li>

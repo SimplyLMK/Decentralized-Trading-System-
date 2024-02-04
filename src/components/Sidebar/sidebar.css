@@ -1,3 +1,6 @@
+/* Edited by Thanh Thao Bui - 104170172
+Sidebar now is responsive */
+
 .sidebar {
     width: 300px;
     min-width: 300px;
@@ -11,50 +14,57 @@
     top: 0;
     height: 100vh;
     overflow-y: auto;
-  }
-  .content {
-    position: fixed;
-    width: inherit;
-  }
-  .sidebar .user {
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 1px;
-    padding: 40px 30px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-  }
-  .sidebar .links {
-    margin-top: 80px;
-    margin-left: 20px;
-  }
-  .sidebar .links li {
-    margin-top: 10px;
-  }
-  .sidebar .links a {
-    display: flex;
-    padding: 10px;
-    text-decoration: none;
-    width: 100%;
-    color: #fff;
-    box-sizing: border-box;
-  }
-  .sidebar .links img {
-    margin-right: 10px;
-    filter: invert(100%);
-  }
-  .sidebar .links a.active {
-    color: #555;
-    background: rgb(255, 255, 255);
-    border-radius: 20px 0 0 20px;
-  }
-  
-  .sidebar.collapsed {
-    transform: translateX(-100%);
-  }
+}
+.content {
+  position: fixed;
+  width: inherit;
+}
+.sidebar .user {
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 1px;
+  padding: 40px 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.sidebar .links {
+  margin-top: 80px;
+  margin-left: 20px;
+}
+.sidebar .links li {
+  margin-top: 10px;
+}
+.sidebar .links a {
+  display: flex;
+  padding: 10px;
+  text-decoration: none;
+  width: 100%;
+  color: #fff;
+  box-sizing: border-box;
+}
+.sidebar .links img {
+  margin-right: 10px;
+  filter: invert(100%);
+}
+.sidebar .links a.active {
+  color: #555;
+  background: rgb(255, 255, 255);
+  border-radius: 20px 0 0 20px;
+}
 
-  .toggle-button {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.toggle-button {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* // when the width of the screen < 800px, the sidebar will not be displayed  */
+@media (max-width: 800px) {
+  .sidebar {
+    display: none;
   }
+}
