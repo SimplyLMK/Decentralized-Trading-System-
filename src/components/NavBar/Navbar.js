@@ -21,17 +21,17 @@ export default function NavBar()
                 <span>Coinmiya</span>
             </li>
                 <li>
-                    <Link to="/"><span>Home</span></Link>
+                    <Link className="nav-elements" to="/"><span>Home</span></Link>
                 </li>
                 <li>
-                    <Link to="/dashboard"><span>Dashboard</span></Link>
+                    <Link className="nav-elements" to="/dashboard"><span>Dashboard</span></Link>
                 </li>
                 <li>
-                    <Link to="/create"><span>Create</span></Link>
+                    <Link className="nav-elements" to="/create"><span>Create</span></Link>
                 </li>
                 
                 <li>
-                    <Link to="/history"><span>History</span></Link>
+                    <Link className="nav-elements" to="/history"><span>History</span></Link>
                 </li>
 
                 <li>
