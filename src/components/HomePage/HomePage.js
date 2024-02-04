@@ -5,15 +5,15 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
-import "./hero-section.css";
+import "./homepage.css";
 
-const HeroSection = () => {
+const HomePage = () => {
   return (
-    <section className="hero__section">
+    <section className="home__section">
       <Container>
         <Row>
           <Col lg="12" md="12" sm="6">
-            <div className="hero__content">
+            <div className="home__content">
               {/* the heading of the content  */}
               <h2>
                 <span>Coinmiya - Decentralized Trading System</span> 
@@ -28,7 +28,7 @@ const HeroSection = () => {
                 trading seamless and user-friendly.
               </p>
 
-              <div className="hero__btns d-flex align-items-center gap-4">
+              <div className="home__btns d-flex align-items-center gap-4">
                 {/* the Explore button link to dashboard page */}
                 <button className="explore__btn d-flex align-items-center gap-2">
                   <i className="ri-rocket-line"></i>{" "}
@@ -43,16 +43,10 @@ const HeroSection = () => {
               </div>
             </div>
           </Col>
-
-          {/* <Col lg="6" md="6">
-            <div className="hero__img">
-              <img src={heroImg} alt="" className="w-100" />
-            </div>
-          </Col> */}
         </Row>
       </Container>
     </section>
   );
 };
 
-export default HeroSection;
+export default HomePage;

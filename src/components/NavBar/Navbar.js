@@ -24,7 +24,7 @@ export default function NavBar()
                     <Link to="/"><span>Home</span></Link>
                 </li>
                 <li>
-                    <Link to="/dashboard"><span>Marketplace</span></Link>
+                    <Link to="/dashboard"><span>Dashboard</span></Link>
                 </li>
                 <li>
                     <Link to="/create"><span>Create</span></Link>

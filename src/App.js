@@ -9,8 +9,8 @@ import Details from './components/Details/Details';
 import Navbar from './components/NavBar/Navbar';
 import Sidebar from './components/Sidebar/sidebar';
 import History from './components/History/history';
-import HeroSection from './components/HeroSection/HeroSection';
 import Footer from './components/Footer/Footer';
+import HomePage from './components/HomePage/HomePage';
 
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
           <Navbar />
           {/* Establish routes to main components */}
           <Routes>
-            <Route exact path="/" element={<HeroSection />} />
+            <Route exact path="/" element={<HomePage />} /> 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create" element={<Create />} />
             <Route path="/history" element={<History />} />
