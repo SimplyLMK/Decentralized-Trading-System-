@@ -5,7 +5,7 @@ import { TransactionsContext } from '../../context/TransContext';
 import { useContext } from 'react';
 import { useFirestore } from '../../hooks/useFirestore';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col } from "reactstrap";
+import { Row, Col } from "reactstrap";
 
 
 
@@ -61,7 +61,9 @@ export default function Details()
                 
         };
           
-
+        // Edited by Thanh Thao Bui - 104170172
+        // I edited to use reactstrap to make it responsive
+        // Below is the content of the detail page for each asset
         return (
                 <Row className="playlist-details">
                     <Col sm={6} className="playlist-info column">
