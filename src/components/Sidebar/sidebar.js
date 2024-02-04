@@ -24,6 +24,10 @@ export default function Sidebar()
               <nav className="links">
                 <ul>
                   <li>
+                    <NavLink exact to="/"><span>Home page</span></NavLink>
+                  </li>
+
+                  <li>
                     <NavLink exact to="/dashboard"><span>Dashboard</span></NavLink>
                   </li>
                   
