@@ -19,8 +19,11 @@ export default function Sidebar()
               
               <div className='user'>
                 <p>My Wallet:</p>
+                {/* show user's account ID when they connected the wallet. If not connect, it will be nothing */}
                 <p style={{ fontSize: '50%', fontStretch: 'condensed' }}> {account}</p>
               </div>
+
+              {/* show name of pages in sidebar and navigate to its page */}
               <nav className="links">
                 <ul>
                   <li>
