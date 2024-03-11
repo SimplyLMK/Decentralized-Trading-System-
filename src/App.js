@@ -11,6 +11,7 @@ import Sidebar from './components/Sidebar/sidebar';
 import History from './components/History/history';
 import HeroSection from './components/HeroSection/HeroSection';
 import Footer from './components/Footer/Footer';
+import Test from './components/Testting/Test';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/create" element={<Create />} />
             <Route path="/history" element={<History />} />
             <Route path="/details/:id" element={<Details />} />
+            <Route path="/test/:id" element={<Test />} />
           </Routes>
           <Footer />
         </div>
