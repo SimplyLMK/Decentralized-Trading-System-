@@ -109,6 +109,7 @@ export default function Create()
                         required 
                         type="number" 
                         step="0.0001" 
+                        min = "0"
                         onChange={(e) => setPrice(e.target.value)}
                         value={price}
                     />
@@ -118,7 +119,7 @@ export default function Create()
 
                 <label>
                     <span>Upload Image/Gif:</span>
-                    <input type="file" onChange={handleImageChange}  />
+                    <input type="file" accept="image/*, video/*" onChange={handleImageChange}  />
                 </label>
 
                 <label>
