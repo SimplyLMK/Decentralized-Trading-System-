@@ -5,6 +5,7 @@ import { TransactionsContext } from '../../context/TransContext';
 import { useContext } from 'react';
 import { useFirestore } from '../../hooks/useFirestore';
 import { useNavigate } from 'react-router-dom';
+import { Row, Col } from "reactstrap";
 
 
 
@@ -60,17 +61,19 @@ export default function Details()
                 
         };
           
-
+        // Edited by Thanh Thao Bui - 104170172
+        // I edited to use reactstrap to make it responsive
+        // Below is the content of the detail page for each asset
         return (
-                <div className="playlist-details">
-                    <div className="playlist-info">
+                <Row className="playlist-details">
+                    <Col sm={6} className="playlist-info column">
                         <div className="cover">
                             {document && <img src={document.image} alt="../../images/play.png" />}
                         </div>
                         <strong>Offered by:</strong>
                         <p className="description">{document && document.account}</p>
-                    </div>
-                    <div className="one-song">
+                    </Col>
+                    <Col sm={6} className="one-song column">
                         <div className="info">  
                             <strong className="title">{document && document.name}</strong>
                             
@@ -80,9 +83,8 @@ export default function Details()
                         </div>
                         {account ?<button className="button-77" onClick={handleSubmit}>Instant Purchase</button> :
                         <p>You need to connect account first before being able purchase</p>}
-
-                    </div>
-                </div>
+                    </Col>
+                </Row>
             );
 }
   

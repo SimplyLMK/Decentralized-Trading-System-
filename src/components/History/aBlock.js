@@ -1,22 +1,32 @@
 //__writen by 104179506__Le Minh Kha
+// edited by Thanh Thao Bui - 104170172 
+// I used <tr> and <td> for each transaction will return a row in the table 
 
-const A_Transaction = ({ addressTo, addressFrom, amount}) => {
+import '../History/history.css'
+
+const A_Transaction = ({ transactionHash, addressTo, addressFrom, amount}) => {
   
     return (
-      <div>
-        <div>
-          <div>
-            <a href={`https://sepolia.etherscan.io/address/${addressFrom}`} target="_blank" rel="noreferrer">
-              <p>From: {addressFrom}</p>
-            </a>
-            <a href={`https://sepolia.etherscan.io/address/${addressTo}`} target="_blank" rel="noreferrer">
-              <p>To: {addressTo}</p>  
-            </a>
-            <p>Amount: {amount} ETH</p>
-            <br></br>
-          </div>
-        </div>
-      </div>
+      <tr>
+        {/* <td>
+          <a href={`https://sepolia.etherscan.io/tx/${transactionHash}`} target="_blank" rel="noreferrer">
+            <p className="data-in-row">{transactionHash}</p>
+          </a>
+        </td> */}
+        <td>
+          <a href={`https://sepolia.etherscan.io/address/${addressFrom}`} target="_blank" rel="noreferrer">
+            <p className="data-in-row">{addressFrom}</p>
+          </a>
+        </td>
+        <td>
+          <a href={`https://sepolia.etherscan.io/address/${addressTo}`} target="_blank" rel="noreferrer">
+            <p className="data-in-row">{addressTo}</p>  
+          </a>
+        </td>
+        <td>
+          <p className="data-in-row">{amount} ETH</p>
+        </td>
+      </tr>
     );
   };
 
