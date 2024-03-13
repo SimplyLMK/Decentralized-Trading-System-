@@ -1,38 +1,96 @@
-# from typing import Union
 
-# from fastapi import FastAPI
-# from pydantic import BaseModel
-
-# app = FastAPI()
-
-
-# class Item(BaseModel):
-#     name: str
-#     price: float
-#     is_offer: Union[bool, None] = None
-
-
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
-
-
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Union[str, None] = None):
-#     return {"item_id": item_id, "q": q}
-
-
-# @app.put("/items/{item_id}")
-# def update_item(item_id: int, item: Item):
-#     return {"item_name": item.name, "item_id": item_id}
-
-
-from fastapi import FastAPI
+from datetime import datetime
+from fastapi import FastAPI, Response, Depends
 from web3 import Web3
 from pydantic import BaseModel
 import json
+import pathlib
+from sqlmodel import Session, select
+from database import TransactionModel, engine
+from models import Asset
+from typing import List, Union
 
 app = FastAPI()
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+@app.on_event("startup")
+async def startup_event():
+    DATAFILE = pathlib.Path() / 'asset.json'
+     # create a Session scoped to the startup event
+    # Note: we can also use a context manager
+    session = Session(engine)
+
+    # check if the database is already populated
+    stmt = select(TransactionModel)
+    result = session.exec(stmt).first()
+
+    # Load data if there's no results
+    if result is None:
+        with open(DATAFILE, 'r') as f:
+            assets = json.load(f)
+            for asset in assets:
+                session.add(TransactionModel(**asset))
+    
+        session.commit()
+    session.close()
+
+@app.get('/assets/', response_model=List[Asset])
+def assets():
+    with Session(engine) as session:
+        statement = select(TransactionModel) 
+        result = session.exec(statement).all()
+    return result
+
+@app.get('/assets/{id}/', response_model=Union[Asset, str])
+def asset(id: int, response: Response):
+    with Session(engine) as session:
+        asset = session.get(TransactionModel, id)
+
+    if asset is None:
+        response.status_code = 404
+        return "asset not found"
+    return asset
+
+@app.post("/assets/", response_model = Asset, status_code = 201)
+def create_asset(asset: TransactionModel, session: Session = Depends(get_session)):
+    session.add(asset)
+    session.commit()
+    session.refresh(asset)
+    return asset
+
+
+
+
+@app.put("/assets/{id}", response_model=Union[Asset, str])
+def update_asset(id: int, updated_asset: Asset, response: Response, session: Session = Depends(get_session)):
+    asset = session.get(TransactionModel, id)
+    if not asset:
+        response.status_code = 404
+        return "Asset not found"
+    
+    asset_data = updated_asset.dict(exclude_unset=True)
+    for key, value in asset_data.items():
+        setattr(asset, key, value)
+    
+    session.add(asset)
+    session.commit()
+    return asset
+
+
+@app.delete("/assets/{id}")
+def delete_asset(id: int, response: Response, session: Session = Depends(get_session)):
+    asset = session.get(TransactionModel, id)
+    if not asset:
+        response.status_code = 404
+        return {"message": "Asset not found"}
+    
+    session.delete(asset)
+    session.commit()
+    return {"message": "Asset deleted successfully"}
+
 
 # Connect to the blockchain
 w3 = Web3(Web3.HTTPProvider("https://eth-sepolia.g.alchemy.com/v2/_cQb10zXZhy5PRgur8hYXZsvvlIpgKFr"))
@@ -41,12 +99,12 @@ if not w3.is_connected():
 else:
     print("Successfully connected to Ethereum network!")
 
-# Replace YOUR_CONTRACT_ABI and YOUR_CONTRACT_ADDRESS with your actual contract ABI and address
+
 with open('Transactions.json', 'r') as file:
     contract_data = json.load(file)
 contract_abi = contract_data['abi']
 
-# Use the contract address from your constants.js
+
 contract_address = '0x98b9755B02E3C9c215138D283456B3F4895A755A'
 contract = w3.eth.contract(address=contract_address, abi=contract_abi)
 
@@ -56,6 +114,7 @@ class TransactionData(BaseModel):
     amount: int
     message: str
     keyword: str
+    tag: str  
 
 @app.post("/send-transaction/")
 async def send_transaction(tx_data: TransactionData):
@@ -92,3 +151,20 @@ async def get_transactions():
             "keyword": tx[5],
         })
     return {"transactions": transactions}
+
+
+# from typing import Union
+
+# from fastapi import FastAPI
+
+# app = FastAPI()
+
+
+# @app.get("/")
+# def read_root():
+#     return {"Hello": "World"}
+
+
+# @app.get("/items/{item_id}")
+# def read_item(item_id: int, q: Union[str, None] = None):
+#     return {"item_id": item_id, "q": q}
