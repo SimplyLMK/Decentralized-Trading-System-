@@ -1,170 +1,157 @@
-
-from datetime import datetime
-from fastapi import FastAPI, Response, Depends
-from web3 import Web3
-from pydantic import BaseModel
-import json
-import pathlib
-from sqlmodel import Session, select
-from database import TransactionModel, engine
-from models import Asset
 from typing import List, Union
+from fastapi import FastAPI, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+from fastapi.middleware.cors import CORSMiddleware
+from web3 import Web3
+from solcx import compile_standard, install_solc
+import json
+from models import User, Asset, UserModel, AssetModel
+from eth_utils import decode_hex
+from web3.auto import w3
 
+install_solc("0.8.0")
+
+# Database setup
+DB_FILE = 'db.sqlite3'
+Base = declarative_base()
+engine = create_engine(DB_FILE, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+# FastAPI app
 app = FastAPI()
 
-def get_session():
-    with Session(engine) as session:
-        yield session
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.on_event("startup")
-async def startup_event():
-    DATAFILE = pathlib.Path() / 'asset.json'
-     # create a Session scoped to the startup event
-    # Note: we can also use a context manager
-    session = Session(engine)
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-    # check if the database is already populated
-    stmt = select(TransactionModel)
-    result = session.exec(stmt).first()
+# Endpoints
+@app.post("/users/", response_model=User)
+def create_user(user: User, db: Session = Depends(get_db)):
+    db_user = UserModel(username=user.username, password=user.password, token=user.token)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
-    # Load data if there's no results
-    if result is None:
-        with open(DATAFILE, 'r') as f:
-            assets = json.load(f)
-            for asset in assets:
-                session.add(TransactionModel(**asset))
+@app.get("/users/", response_model=List[User])
+def read_users(db: Session = Depends(get_db)):
+    users = db.query(UserModel).all()
+    return users
+
+@app.post("/assets/", response_model=Asset)
+def create_asset(asset: Asset, db: Session = Depends(get_db)):
+    db_asset = AssetModel(name=asset.name, price=asset.price, volume=asset.volume, description=asset.description, category=asset.category, user_id=asset.user_id)
+    db.add(db_asset)
+    db.commit()
+    db.refresh(db_asset)
+    return db_asset
+
+@app.get("/assets/", response_model=List[Asset])
+def read_assets(db: Session = Depends(get_db)):
+    assets = db.query(AssetModel).all()
+    return assets
+
+w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:8000"))
+
+@app.get("/compile/")
+def compile_contract():
+    with open('./smart_contract_v2/contracts/Transaction.sol', 'r') as file:
+        asset_sol = file.read()
     
-        session.commit()
-    session.close()
-
-@app.get('/assets/', response_model=List[Asset])
-def assets():
-    with Session(engine) as session:
-        statement = select(TransactionModel) 
-        result = session.exec(statement).all()
-    return result
-
-@app.get('/assets/{id}/', response_model=Union[Asset, str])
-def asset(id: int, response: Response):
-    with Session(engine) as session:
-        asset = session.get(TransactionModel, id)
-
-    if asset is None:
-        response.status_code = 404
-        return "asset not found"
-    return asset
-
-@app.post("/assets/", response_model = Asset, status_code = 201)
-def create_asset(asset: TransactionModel, session: Session = Depends(get_session)):
-    session.add(asset)
-    session.commit()
-    session.refresh(asset)
-    return asset
-
-
-
-
-@app.put("/assets/{id}", response_model=Union[Asset, str])
-def update_asset(id: int, updated_asset: Asset, response: Response, session: Session = Depends(get_session)):
-    asset = session.get(TransactionModel, id)
-    if not asset:
-        response.status_code = 404
-        return "Asset not found"
+    compiled_sol = compile_standard({
+        "language": "Solidity",
+        "sources": {"Transaction.sol": {"content": asset_sol}},
+        "settings": {"outputSelection": {"*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}}}
+    }, solc_version="0.8.0")
     
-    asset_data = updated_asset.dict(exclude_unset=True)
-    for key, value in asset_data.items():
-        setattr(asset, key, value)
+    bytecode = compiled_sol["contracts"]["Transaction.sol"]["Asset"]["evm"]["bytecode"]["object"]
+    abi = compiled_sol["contracts"]["Transaction.sol"]["Asset"]["abi"]
     
-    session.add(asset)
-    session.commit()
-    return asset
-
-
-@app.delete("/assets/{id}")
-def delete_asset(id: int, response: Response, session: Session = Depends(get_session)):
-    asset = session.get(TransactionModel, id)
-    if not asset:
-        response.status_code = 404
-        return {"message": "Asset not found"}
-    
-    session.delete(asset)
-    session.commit()
-    return {"message": "Asset deleted successfully"}
-
-
-# Connect to the blockchain
-w3 = Web3(Web3.HTTPProvider("https://eth-sepolia.g.alchemy.com/v2/_cQb10zXZhy5PRgur8hYXZsvvlIpgKFr"))
-if not w3.is_connected():
-    print("Failed to connect to Ethereum network!")
-else:
-    print("Successfully connected to Ethereum network!")
-
-
-with open('Transactions.json', 'r') as file:
-    contract_data = json.load(file)
-contract_abi = contract_data['abi']
-
+    AssetContract = w3.eth.contract(abi=abi, bytecode=bytecode)
+    return {"bytecode": bytecode, "abi": abi}
 
 contract_address = '0x98b9755B02E3C9c215138D283456B3F4895A755A'
 contract = w3.eth.contract(address=contract_address, abi=contract_abi)
 
-# Define a Pydantic model for the transaction data
-class TransactionData(BaseModel):
-    receiver: str
-    amount: int
-    message: str
-    keyword: str
-    tag: str  
 
-@app.post("/send-transaction/")
-async def send_transaction(tx_data: TransactionData):
-   
-    account = w3.eth.account.privateKeyToAccount('1fd92d0f70352422cce7ddd1e6f54435e22bdf4fcaf5eac2c5a6dd77323b8c5c')
-    nonce = w3.eth.getTransactionCount(account.address)
-    tx = contract.functions.addToBlockchain(
-        Web3.toChecksumAddress(tx_data.receiver),
-        tx_data.amount,
-        tx_data.message,
-        tx_data.keyword
+
+app = FastAPI()
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.post("/send_transaction/")
+async def send_transaction(receiver: str, amount: int, message: str, keyword: str, db: Session = Depends(get_db)):
+    user_id = 1  
+    user_credentials = db.query(models.UserCredentials).filter(models.UserCredentials.user_id == user_id).first()
+    if not user_credentials:
+        raise HTTPException(status_code=404, detail="User credentials not found")
+
+    sender_address = user_credentials.address
+    sender_private_key = user_credentials.private_key
+    
+    
+    nonce = w3.eth.getTransactionCount(sender_address)
+    txn_dict = contract.functions.addToBlockchain(
+        Web3.toChecksumAddress(receiver), amount, message, keyword
     ).buildTransaction({
-        'chainId': 11155111,  # Chain ID for Sepolia
+        'chainId': 1337,  
         'gas': 2000000,
         'gasPrice': w3.toWei('50', 'gwei'),
         'nonce': nonce,
     })
-    signed_tx = account.sign_transaction(tx)
-    tx_hash = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
-    return {"transaction_hash": w3.toHex(tx_hash)}
-
-@app.get("/transactions/")
-async def get_transactions():
-    tx_count = contract.functions.getTransactionCount().call()
-    transactions = []
-    for i in range(tx_count):
-        tx = contract.functions.transactions(i).call()
-        transactions.append({
-            "sender": tx[0],
-            "receiver": tx[1],
-            "amount": tx[2],
-            "message": tx[3],
-            "timestamp": tx[4],
-            "keyword": tx[5],
-        })
-    return {"transactions": transactions}
+    
+    signed_txn = w3.eth.account.signTransaction(txn_dict, private_key=sender_private_key)
+    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+    txn_receipt = w3.eth.waitForTransactionReceipt(txn_hash)
+    
+    if txn_receipt.status == 1:  # Transaction was successful
+        return {"status": "success", "transaction_hash": txn_hash.hex()}
+    else:
+        raise HTTPException(status_code=400, detail="Transaction failed")
 
 
-# from typing import Union
-
-# from fastapi import FastAPI
-
-# app = FastAPI()
 
 
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
+@app.route('/signup', methods=['POST'])
+def signup():
+    public_address = request.json['publicAddress']
+    user = User.query.filter_by(publicAddress=public_address).first()
+    if not user:
+        user = User(publicAddress=public_address)
+        db.session.add(user)
+        db.session.commit()
+    return jsonify(publicAddress=user.publicAddress, nonce=user.nonce)
+
+@app.route('/login', methods=['POST'])
+def login():
+    public_address = request.json['publicAddress']
+    user = User.query.filter_by(publicAddress=public_address).first()
+    if not user:
+        return jsonify(error='User not found'), 404
+    return jsonify(nonce=user.nonce)
 
 
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: Union[str, None] = None):
-#     return {"item_id": item_id, "q": q}
+
