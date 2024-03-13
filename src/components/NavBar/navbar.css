@@ -1,31 +1,47 @@
+/* 
+Edited by Thanh Thao Bui - 104170172 
+Currenly, navbar is responsive
+*/
+
 .navbar {
     width: 100%;
     padding: 30px 0;
     box-sizing: border-box;
     margin-bottom: 80px;
+}
+.navbar ul {
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+}
+.navbar ul li span:hover {
+  /* change navbar text into orange when hover the text  */
+  color: orangered;
+}
+.navbar .logo {
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+.navbar .logo img {
+  margin-right: 10px;
+  filter: invert(25%);
+  width: 36px;
+  margin-top: -8px;
+}
+.navbar a {
+  color: #333;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+/* when width of screen is smaller than 1075px, the elements in navbar except logo, name, button will disappeared */
+@media (max-width: 1075px) {
+  .nav-elements {
+    display: none;
   }
-  .navbar ul {
-    display: flex;
-    margin: 0 auto;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .navbar .logo {
-    font-weight: bold;
-    color: rgb(0, 0, 0);
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    margin-right: auto;
-  }
-  .navbar .logo img {
-    margin-right: 10px;
-    filter: invert(25%);
-    width: 36px;
-    margin-top: -8px;
-  }
-  .navbar a {
-    color: #333;
-    text-decoration: none;
-    margin-right: 20px;
-  }
+}

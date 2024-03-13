@@ -1,0 +1,16 @@
+/* written by Thanh Thao Bui - 104170172
+This is styled for aBlock.js file
+Specific for body text in the transaction history table */
+
+p.data-in-row {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+p.data-in-row:hover {
+    color: orangered;
+    text-decoration: underline;
+    text-decoration-color: orangered;
+}

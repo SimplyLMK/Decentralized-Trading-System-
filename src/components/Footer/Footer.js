@@ -1,3 +1,5 @@
+// Written by Thanh Thao Bui - 104170172
+
 import "./footer.css"
 
 const Footer = () => {
