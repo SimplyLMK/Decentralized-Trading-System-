@@ -16,16 +16,14 @@ const HomePage = () => {
             <div className="home__content">
               {/* the heading of the content  */}
               <h2>
-                <span>Coinmiya - Decentralized Trading System</span> 
+                <span>Decentralized Trading System</span> 
               </h2>
               {/* the introduction of the website */}
               <p>
-                Coinmiya is a decentralized NFT trading system, offering users a secure 
-                and transparent platform to trade Non-Fungible Tokens (NFT). Through 
-                smart contracts, it automates transactions, empowering users 
-                with direct control over their digital assets. Coinmiya's commitment 
-                to decentralization ensures a trustworthy environment, making NFT 
-                trading seamless and user-friendly.
+                Welcome to COS30049 project of EHC 35.2 team! 
+                We are EHC 35.2 Team.
+                In this project, we create a NFT decentralized trading platform. 
+                Let's explore functions of this website.
               </p>
 
               <div className="home__btns d-flex align-items-center gap-4">

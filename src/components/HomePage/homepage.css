@@ -4,6 +4,7 @@ It is styled for responsived */
 /* style the content in home page when in normal screen */
 .home__section {
   margin-top: 60px;
+  text-align: center;
 }
 
 .home__content h2 {
@@ -12,24 +13,19 @@ It is styled for responsived */
 }
 
 .home__content h2 span {
-  background: linear-gradient(-45deg, #e8891c, orangered, #e8891c, orangered);
-  background-size: 100% 100%;
-  background-clip: text;
-  -webkit-text-stroke: 3px transparent;
-  -webkit-text-fill-color: #151413;
+  color: orangered;
   display: inline-block;
 }
 
 .home__content p {
   margin-top: 30px;
-  text-align: justify;
+  text-align: center;
 }
 
 .home__btns {
   margin-top: 40px;
 }
 
-.explore__btn,
 .create__btn {
   border: none;
   outline: none;
@@ -40,20 +36,47 @@ It is styled for responsived */
   background: transparent;
 }
 
+.explore__btn {
+  border: none;
+  outline: none;
+  padding: 7px 25px !important;
+  border-radius: 50px !important;
+  border: 1px solid orangered !important;
+  font-size: 0.9rem;
+  background: orangered;
+  margin-right: 10px;
+}
+
 .explore__btn i,
 .create__btn i {
   color: #000000;
   font-size: 1rem;
 }
 
-.explore__btn a,
 .create__btn a {
   text-decoration: none;
   color: #000000;
 }
 
-.home__btns button a:hover {
+.explore__btn a
+{
+  text-decoration: none;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.create__btn a:hover {
   color: orangered;
+}
+
+.explore__btn a:hover
+{
+  text-decoration: none;
+  color: orangered;
+}
+
+.explore__btn:hover {
+  background-color: blanchedalmond;
 }
 
 .home__img {
