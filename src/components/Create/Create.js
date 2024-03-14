@@ -90,7 +90,7 @@ export default function Create()
     };  
     return (
         <div className="create-form">
-            <h2 className="page-title">Create a new asset</h2>
+            <h2 className="page-title">Create A New Asset</h2>
             <form onSubmit={handleSubmit} >            
                 <label>
 
@@ -115,8 +115,6 @@ export default function Create()
                     />
                 </label>
 
-                <label> <p>{account}</p> </label>
-
                 <label>
                     <span>Upload Image/Gif:</span>
                     <input type="file" accept="image/*, video/*" onChange={handleImageChange}  />
@@ -130,10 +128,13 @@ export default function Create()
                         handleChange={() => {}}
                     /> 
                 </label>
-                
 
+                <label> 
+                    <p> Created by: {account}</p> 
+                </label>
+                
                 {account ? <button className="btn" disabled={isLoading}>
-                    {isLoading ? 'Loading...' : 'Add asset'}
+                    {isLoading ? 'Loading...' : 'Create'}
                 </button> : <p>You need to connect account first before being able to create an asset</p>}
 
                 {formError && <p className="error">{formError}</p>}
