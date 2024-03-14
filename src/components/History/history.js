@@ -17,9 +17,10 @@ const History = () => {
         (<h3>Connect your account to see the latest transactions</h3>)}
         <br></br>
         <div>
-          <Table responsive size="sm">
+          <table className="styled-table">
             <thead>
               <tr>
+                <th>Transaction Hash</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Value</th>
@@ -31,7 +32,7 @@ const History = () => {
                 <A_Transaction key={i} {...transaction} />
               ))}
             </tbody>
-          </Table>
+          </table>
         </div>
       </div>
     </div>

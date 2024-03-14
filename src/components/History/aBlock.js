@@ -8,19 +8,19 @@ const A_Transaction = ({ transactionHash, addressTo, addressFrom, amount}) => {
   
     return (
       <tr>
-        {/* <td>
+        <td>
           <a href={`https://sepolia.etherscan.io/tx/${transactionHash}`} target="_blank" rel="noreferrer">
-            <p className="data-in-row">{transactionHash}</p>
+            <p className="data-in-row">{transactionHash.substring(0, 24) + "..."}</p>
           </a>
-        </td> */}
+        </td>
         <td>
           <a href={`https://sepolia.etherscan.io/address/${addressFrom}`} target="_blank" rel="noreferrer">
-            <p className="data-in-row">{addressFrom}</p>
+            <p className="data-in-row">{addressFrom.substring(0, 12) + "..." + addressFrom.substring(addressFrom.length - 12)}</p>
           </a>
         </td>
         <td>
           <a href={`https://sepolia.etherscan.io/address/${addressTo}`} target="_blank" rel="noreferrer">
-            <p className="data-in-row">{addressTo}</p>  
+            <p className="data-in-row">{addressTo.substring(0, 12) + "..." + addressTo.substring(addressTo.length - 12)}</p>  
           </a>
         </td>
         <td>
